@@ -22,6 +22,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Future<void> _toggleTaskComplete(Task task) async {
     final updatedTask = task.copyWith(isCompleted: !task.isCompleted);
     await DatabaseHelper().updateTask(updatedTask);
+
     setState(() {
       _tasksFuture = DatabaseHelper().getAllTasks();
     });
@@ -29,9 +30,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Future<void> _deleteTask(int taskId) async {
     await DatabaseHelper().deleteTask(taskId);
+
     setState(() {
       _tasksFuture = DatabaseHelper().getAllTasks();
     });
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tugas berhasil dihapus')),
@@ -42,19 +45,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         backgroundColor: const Color(0xFF4ECCA7),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: const Text(
           'Daftar Tugas',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder<List<Task>>(
@@ -65,9 +62,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           final tasks = snapshot.data ?? [];
@@ -82,7 +77,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final task = tasks[index];
@@ -96,20 +91,24 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 },
                 background: Container(
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 16),
-                  color: Colors.red,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: const Icon(Icons.delete, color: Colors.white),
                 ),
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),
@@ -117,10 +116,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     children: [
                       Checkbox(
                         value: task.isCompleted,
-                        onChanged: (bool? value) {
-                          _toggleTaskComplete(task);
-                        },
+                        activeColor: const Color(0xFF4ECCA7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        onChanged: (_) => _toggleTaskComplete(task),
                       ),
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,35 +140,41 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                     : Colors.black,
                               ),
                             ),
+
                             const SizedBox(height: 4),
+
                             Text(
-                              DateFormat('dd MMM yyyy')
-                                  .format(task.dueDate),
+                              '${DateFormat('dd MMM yyyy').format(task.dueDate)} • ${isImportant ? "Penting" : "Biasa"}',
                               style: const TextStyle(
-                                fontSize: 12,
+                                fontSize: 11,
                                 color: Colors.grey,
                               ),
                             ),
+
                             if (task.description.isNotEmpty) ...[
                               const SizedBox(height: 4),
                               Text(
                                 task.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
+
+                      const SizedBox(width: 10),
+
                       Icon(
-                        Icons.arrow_forward,
-                        color: isImportant ? Colors.red : Colors.green,
+                        Icons.play_arrow,
                         size: 20,
+                        color: isImportant
+                            ? const Color(0xFFCC3333)
+                            : const Color(0xFF52B788),
                       ),
                     ],
                   ),
