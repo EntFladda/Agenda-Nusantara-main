@@ -287,7 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
                               Text(
-                                '[Nama Mahasiswa]',
+                                'Dika Dwi Alamsyah',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -295,7 +295,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'NIM: [xxxxxxxxxx]',
+                                'NIM: [2241720129]',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
