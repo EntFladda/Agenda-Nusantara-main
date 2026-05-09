@@ -47,39 +47,45 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         backgroundColor: const Color(0xFF4ECCA7),
         elevation: 0,
         title: const Text(
           'Beranda',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // HEADER
             Container(
-              color: const Color(0xFF4ECCA7),
-              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              decoration: const BoxDecoration(
+                color: Color(0xFF4ECCA7),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Halo, ${widget.username}! 👋',
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Senin, ${DateFormat('d MMM yyyy').format(DateTime.now())}',
+                    DateFormat('EEEE, d MMMM yyyy', 'id_ID')
+                        .format(DateTime.now()),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.white70,
@@ -88,16 +94,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Task Stats
+
+            const SizedBox(height: 16),
+
+            // STATS
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
                     child: DashboardCard(
                       label: 'TUGAS SELESAI',
                       count: _completedCount,
-                      color: Colors.green,
+                      color: const Color(0xFF4ECCA7),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -111,164 +120,155 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Chart
+
+            const SizedBox(height: 16),
+
+            // CHART
             Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'TUGAS SELESAI / HARI (BONUS)',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    )
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'TUGAS SELESAI / HARI (BONUS)',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: SizedBox(
-                      height: 200,
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 180,
                       child: _tasksPerDay.isEmpty
                           ? const Center(
                               child: Text(
-                                'Belum ada data tugas yang selesai',
+                                'Belum ada data',
                                 style: TextStyle(color: Colors.grey),
                               ),
                             )
                           : BarChart(
                               BarChartData(
                                 alignment: BarChartAlignment.spaceAround,
-                                maxY: _tasksPerDay.values.isEmpty
-                                    ? 1
-                                    : _tasksPerDay.values
-                                            .reduce((a, b) => a > b ? a : b)
-                                            .toDouble() +
-                                        1,
-                                barTouchData: BarTouchData(enabled: true),
+                                borderData: FlBorderData(show: false),
+                                gridData: FlGridData(show: false),
                                 titlesData: FlTitlesData(
-                                  show: true,
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  topTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  rightTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
                                   bottomTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
-                                      getTitlesWidget: (double value, TitleMeta meta) {
-                                        const dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-                                        final index = value.toInt();
-                                        if (index >= 0 && index < dayLabels.length) {
-                                          return Text(
-                                            dayLabels[index],
-                                            style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 10,
-                                            ),
-                                          );
-                                        }
-                                        return const Text('');
-                                      },
-                                    ),
-                                  ),
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      getTitlesWidget: (double value, TitleMeta meta) {
+                                      getTitlesWidget: (value, meta) {
+                                        const days = [
+                                          'Sen',
+                                          'Sel',
+                                          'Rab',
+                                          'Kam',
+                                          'Jum',
+                                          'Sab',
+                                          'Min'
+                                        ];
                                         return Text(
-                                          '${value.toInt()}',
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 10,
-                                          ),
+                                          days[value.toInt()],
+                                          style: const TextStyle(fontSize: 10),
                                         );
                                       },
                                     ),
                                   ),
                                 ),
-                                barGroups: _tasksPerDay.isEmpty
-                                    ? []
-                                    : List.generate(
-                                        7,
-                                        (index) => BarChartGroupData(
-                                          x: index,
-                                          barRods: [
-                                            BarChartRodData(
-                                              toY: (_tasksPerDay.values.isNotEmpty
-                                                      ? _tasksPerDay.values.toList()[index % _tasksPerDay.length]
-                                                      : 0)
-                                                  .toDouble(),
-                                              color: const Color(0xFF4ECCA7),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                barGroups: List.generate(
+                                  7,
+                                  (i) => BarChartGroupData(
+                                    x: i,
+                                    barRods: [
+                                      BarChartRodData(
+                                        toY: (_tasksPerDay.values.isNotEmpty
+                                                ? _tasksPerDay.values
+                                                    .toList()[i %
+                                                        _tasksPerDay.length]
+                                                : 0)
+                                            .toDouble(),
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: const Color(0xFF4ECCA7),
+                                        width: 14,
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            // Action Buttons
+
+            const SizedBox(height: 20),
+
+            // MENU GRID
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GridView.count(
                 crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildActionButton(
-                    icon: Icons.add_circle,
-                    label: 'Tambah Tugas\nPenting',
+                    icon: Icons.add,
+                    label: 'Tambah Tugas Penting',
                     color: Colors.red,
                     onTap: () {
-                      Navigator.of(context)
-                          .push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddImportantTaskScreen(),
-                            ),
-                          )
-                          .then((_) => _loadTaskStats());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const AddImportantTaskScreen()),
+                      ).then((_) => _loadTaskStats());
                     },
                   ),
                   _buildActionButton(
-                    icon: Icons.add_circle,
-                    label: 'Tambah Tugas\nBiasa',
+                    icon: Icons.add,
+                    label: 'Tambah Tugas Biasa',
                     color: Colors.green,
                     onTap: () {
-                      Navigator.of(context)
-                          .push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddRegularTaskScreen(),
-                            ),
-                          )
-                          .then((_) => _loadTaskStats());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const AddRegularTaskScreen()),
+                      ).then((_) => _loadTaskStats());
                     },
                   ),
                   _buildActionButton(
                     icon: Icons.list,
-                    label: 'Daftar\nTugas',
+                    label: 'Daftar Tugas',
                     color: Colors.blue,
                     onTap: () {
-                      Navigator.of(context)
-                          .push(
-                            MaterialPageRoute(
-                              builder: (context) => const TaskListScreen(),
-                            ),
-                          )
-                          .then((_) => _loadTaskStats());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const TaskListScreen()),
+                      ).then((_) => _loadTaskStats());
                     },
                   ),
                   _buildActionButton(
@@ -276,9 +276,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: 'Pengaturan',
                     color: Colors.grey,
                     onTap: () {
-                      Navigator.of(context).push(
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
-                          builder: (context) =>
+                          builder: (_) =>
                               SettingsScreen(username: widget.username),
                         ),
                       );
@@ -287,7 +288,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -303,40 +305,38 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
-            ),
+            )
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              width: 45,
+              height: 45,
               decoration: BoxDecoration(
                 color: color,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 28,
-              ),
+              child: Icon(icon, color: Colors.white),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               label,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
-            ),
+            )
           ],
         ),
       ),
