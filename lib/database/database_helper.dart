@@ -163,4 +163,9 @@ class DatabaseHelper {
     
     return true;
   }
+
+  // Login method
+  Future<bool> login(String username, String password) async {
+    return validateUser(username, password);
+  }
 }

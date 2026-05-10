@@ -49,11 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4ECCA7),
+        backgroundColor: const Color(0xFF469187),
         elevation: 0,
         title: const Text(
           'Beranda',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -65,11 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               decoration: const BoxDecoration(
-                color: Color(0xFF4ECCA7),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
+                color: Colors.white,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Color(0xFF2C2C2C),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -88,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         .format(DateTime.now()),
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.white70,
+                      color: Colors.grey,
                     ),
                   ),
                 ],
@@ -153,70 +152,69 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 180,
-                      child: _tasksPerDay.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'Belum ada data',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            )
-                          : BarChart(
-                              BarChartData(
-                                alignment: BarChartAlignment.spaceAround,
-                                borderData: FlBorderData(show: false),
-                                gridData: FlGridData(show: false),
-                                titlesData: FlTitlesData(
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  topTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  rightTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      getTitlesWidget: (value, meta) {
-                                        const days = [
-                                          'Sen',
-                                          'Sel',
-                                          'Rab',
-                                          'Kam',
-                                          'Jum',
-                                          'Sab',
-                                          'Min'
-                                        ];
-                                        return Text(
-                                          days[value.toInt()],
-                                          style: const TextStyle(fontSize: 10),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                barGroups: List.generate(
-                                  7,
-                                  (i) => BarChartGroupData(
-                                    x: i,
-                                    barRods: [
-                                      BarChartRodData(
-                                        toY: (_tasksPerDay.values.isNotEmpty
-                                                ? _tasksPerDay.values
-                                                    .toList()[i %
-                                                        _tasksPerDay.length]
-                                                : 0)
-                                            .toDouble(),
-                                        borderRadius: BorderRadius.circular(6),
-                                        color: const Color(0xFF4ECCA7),
-                                        width: 14,
-                                      )
-                                    ],
-                                  ),
-                                ),
+                      child: BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceAround,
+                          borderData: FlBorderData(show: false),
+                          gridData: FlGridData(show: false),
+                          titlesData: FlTitlesData(
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) {
+                                  const days = [
+                                    'Sen',
+                                    'Sel',
+                                    'Rab',
+                                    'Kam',
+                                    'Jum',
+                                    'Sab',
+                                    'Min'
+                                  ];
+                                  return Text(
+                                    days[value.toInt()],
+                                    style: const TextStyle(fontSize: 10),
+                                  );
+                                },
                               ),
                             ),
+                          ),
+                          barGroups: List.generate(
+                            7,
+                            (i) {
+                              // Get date for this day
+                              final now = DateTime.now();
+                              final date = now.subtract(Duration(days: 6 - i));
+                              final dateStr = date.toIso8601String().split('T').first;
+                              final value = _tasksPerDay[dateStr] ?? 0;
+                              
+                              return BarChartGroupData(
+                                x: i,
+                                barRods: [
+                                  BarChartRodData(
+                                    toY: value.toDouble(),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8),
+                                      topRight: Radius.circular(8),
+                                    ),
+                                    color: const Color(0xFF469187),
+                                    width: 16,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
