@@ -49,9 +49,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF4ECCA7),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Daftar Tugas',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
       body: FutureBuilder<List<Task>>(
