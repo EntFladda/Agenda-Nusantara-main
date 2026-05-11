@@ -24,10 +24,14 @@ class DatabaseHelper {
     taskBox = await Hive.openBox<Map>(taskBoxName);
     userBox = await Hive.openBox<Map>(userBoxName);
 
-    // Create default users if not exists
-    if (userBox.isEmpty) {
+    // Ensure default users exist (add them if they don't exist)
+    if (!userBox.containsKey('user')) {
       await userBox.put('user', {'username': 'user', 'password': 'user', 'name': 'User', 'nim': 'N/A'});
+    }
+    if (!userBox.containsKey('RollinPumpkin')) {
       await userBox.put('RollinPumpkin', {'username': 'RollinPumpkin', 'password': 'Septapumasurya01', 'name': 'Septa Puma Surya', 'nim': '2241720119'});
+    }
+    if (!userBox.containsKey('Febilid')) {
       await userBox.put('Febilid', {'username': 'Febilid', 'password': 'rindukalian12', 'name': 'Febiola Lidya Sianturi', 'nim': '2241720109'});
     }
 
