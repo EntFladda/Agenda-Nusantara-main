@@ -91,7 +91,10 @@ class _AddImportantTaskScreenState extends State<AddImportantTaskScreen> {
         elevation: 0,
         title: const Text(
           'Tambah Tugas Penting',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
       body: SingleChildScrollView(

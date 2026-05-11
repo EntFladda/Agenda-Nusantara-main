@@ -92,7 +92,10 @@ class _AddRegularTaskScreenState extends State<AddRegularTaskScreen> {
         elevation: 0,
         title: const Text(
           'Tambah Tugas Biasa',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
       body: SingleChildScrollView(
