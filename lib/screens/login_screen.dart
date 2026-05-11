@@ -37,10 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (isValid) {
         if (mounted) {
+          // Get user's actual name
+          final userName = await DatabaseHelper().getUserName(username);
+          
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(username: username),
+              builder: (context) => HomeScreen(username: userName),
             ),
           );
         }
@@ -248,9 +251,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Info
                 const Text(
-                  'Demo: Username dan Password adalah "user"',
+                  'Demo: RollinPumpkin / Septapumasurya01 atau Febilid / rindukalian12',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: Colors.grey,
                   ),
                   textAlign: TextAlign.center,

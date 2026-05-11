@@ -24,9 +24,11 @@ class DatabaseHelper {
     taskBox = await Hive.openBox<Map>(taskBoxName);
     userBox = await Hive.openBox<Map>(userBoxName);
 
-    // Create default user if not exists
+    // Create default users if not exists
     if (userBox.isEmpty) {
-      await userBox.put('user', {'username': 'user', 'password': 'user'});
+      await userBox.put('user', {'username': 'user', 'password': 'user', 'name': 'User'});
+      await userBox.put('RollinPumpkin', {'username': 'RollinPumpkin', 'password': 'Septapumasurya01', 'name': 'Septa Puma Surya'});
+      await userBox.put('Febilid', {'username': 'Febilid', 'password': 'rindukalian12', 'name': 'Febiola Lidya Sianturi'});
     }
 
     _initialized = true;
@@ -128,7 +130,8 @@ class DatabaseHelper {
     for (int i = 0; i < taskBox.length; i++) {
       final taskMap = taskBox.getAt(i);
       if (taskMap != null && (taskMap['isCompleted'] as bool? ?? false)) {
-        final dateStr = DateTime.parse(taskMap['dueDate'] as String).toIso8601String().split('T').first;
+        final dueDateStr = taskMap['dueDate'] as String;
+        final dateStr = dueDateStr.substring(0, 10); // Extract YYYY-MM-DD
         data[dateStr] = (data[dateStr] ?? 0) + 1;
       }
     }
@@ -159,9 +162,16 @@ class DatabaseHelper {
     await userBox.put(username, {
       'username': username,
       'password': newPassword,
+      'name': user['name'] ?? 'User',
     });
     
     return true;
+  }
+
+  Future<String> getUserName(String username) async {
+    await initialize();
+    final user = userBox.get(username);
+    return user?['name'] as String? ?? 'User';
   }
 
   // Login method
