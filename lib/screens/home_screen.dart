@@ -151,69 +151,103 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 180,
-                      child: BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceAround,
-                          borderData: FlBorderData(show: false),
-                          gridData: FlGridData(show: false),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  const days = [
-                                    'Sen',
-                                    'Sel',
-                                    'Rab',
-                                    'Kam',
-                                    'Jum',
-                                    'Sab',
-                                    'Min'
-                                  ];
-                                  return Text(
-                                    days[value.toInt()],
-                                    style: const TextStyle(fontSize: 10),
+                      height: 220,
+                      child: Row(
+                        children: [
+                          // Y-axis labels (sticky/fixed on left)
+                          SizedBox(
+                            width: 40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: List.generate(
+                                5,
+                                (i) {
+                                  final value = (5 - i).toInt(); // 5 down to 1
+                                  return SizedBox(
+                                    height: 44,
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Text(
+                                        value.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
                             ),
                           ),
-                          barGroups: List.generate(
-                            7,
-                            (i) {
-                              // Get date for this day
-                              final now = DateTime.now();
-                              final date = now.subtract(Duration(days: 6 - i));
-                              final dateStr = date.toIso8601String().split('T').first;
-                              final value = _tasksPerDay[dateStr] ?? 0;
-                              
-                              return BarChartGroupData(
-                                x: i,
-                                barRods: [
-                                  BarChartRodData(
-                                    toY: value.toDouble(),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(8),
-                                      topRight: Radius.circular(8),
+                          // Scrollable chart area
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: 550,
+                                child: BarChart(
+                                  BarChartData(
+                                    alignment: BarChartAlignment.spaceAround,
+                                    borderData: FlBorderData(show: false),
+                                    gridData: FlGridData(show: false),
+                                    maxY: 5,
+                                    titlesData: FlTitlesData(
+                                      leftTitles: AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      topTitles: AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      rightTitles: AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      bottomTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          getTitlesWidget: (value, meta) {
+                                            final now = DateTime.now();
+                                            final date = now.add(Duration(days: value.toInt()));
+                                            final day = date.day.toString();
+                                            return Text(
+                                              day,
+                                              style: const TextStyle(fontSize: 10),
+                                            );
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                    color: const Color(0xFF469187),
-                                    width: 16,
-                                  )
-                                ],
-                              );
-                            },
+                                    barGroups: List.generate(
+                                      14,
+                                      (i) {
+                                        // Get date for this day (today + i days)
+                                        final now = DateTime.now();
+                                        final date = now.add(Duration(days: i));
+                                        final dateStr = date.toIso8601String().substring(0, 10);
+                                        final value = _tasksPerDay[dateStr] ?? 0;
+
+                                        return BarChartGroupData(
+                                          x: i,
+                                          barRods: [
+                                            BarChartRodData(
+                                              toY: value.toDouble(),
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(8),
+                                                topRight: Radius.circular(8),
+                                              ),
+                                              color: const Color(0xFF52B788),
+                                              width: 40,
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ],
