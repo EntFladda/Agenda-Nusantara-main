@@ -25,11 +25,20 @@ class _HomeScreenState extends State<HomeScreen> {
   int _completedCount = 0;
   int _incompleteCount = 0;
   Map<String, int> _tasksPerDay = {};
+  String _userName = 'User';
 
   @override
   void initState() {
     super.initState();
     _loadTaskStats();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final name = await DatabaseHelper().getUserName(widget.username);
+    setState(() {
+      _userName = name;
+    });
   }
 
   Future<void> _loadTaskStats() async {
@@ -74,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Halo, ${widget.username}! 👋',
+                    'Halo, $_userName! 👋',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

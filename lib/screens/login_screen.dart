@@ -37,13 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (isValid) {
         if (mounted) {
-          // Get user's actual name
-          final userName = await DatabaseHelper().getUserName(username);
-          
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(username: userName),
+              builder: (context) => HomeScreen(username: username),
             ),
           );
         }

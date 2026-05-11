@@ -26,9 +26,9 @@ class DatabaseHelper {
 
     // Create default users if not exists
     if (userBox.isEmpty) {
-      await userBox.put('user', {'username': 'user', 'password': 'user', 'name': 'User'});
-      await userBox.put('RollinPumpkin', {'username': 'RollinPumpkin', 'password': 'Septapumasurya01', 'name': 'Septa Puma Surya'});
-      await userBox.put('Febilid', {'username': 'Febilid', 'password': 'rindukalian12', 'name': 'Febiola Lidya Sianturi'});
+      await userBox.put('user', {'username': 'user', 'password': 'user', 'name': 'User', 'nim': 'N/A'});
+      await userBox.put('RollinPumpkin', {'username': 'RollinPumpkin', 'password': 'Septapumasurya01', 'name': 'Septa Puma Surya', 'nim': '2241720119'});
+      await userBox.put('Febilid', {'username': 'Febilid', 'password': 'rindukalian12', 'name': 'Febiola Lidya Sianturi', 'nim': '2241720109'});
     }
 
     _initialized = true;
@@ -163,6 +163,7 @@ class DatabaseHelper {
       'username': username,
       'password': newPassword,
       'name': user['name'] ?? 'User',
+      'nim': user['nim'] ?? 'N/A',
     });
     
     return true;
@@ -172,6 +173,21 @@ class DatabaseHelper {
     await initialize();
     final user = userBox.get(username);
     return user?['name'] as String? ?? 'User';
+  }
+
+  Future<String> getUserNim(String username) async {
+    await initialize();
+    final user = userBox.get(username);
+    return user?['nim'] as String? ?? 'N/A';
+  }
+
+  Future<Map<String, String>> getUserInfo(String username) async {
+    await initialize();
+    final user = userBox.get(username);
+    return {
+      'name': user?['name'] as String? ?? 'User',
+      'nim': user?['nim'] as String? ?? 'N/A',
+    };
   }
 
   // Login method

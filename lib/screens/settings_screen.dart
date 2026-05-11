@@ -21,6 +21,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _obscureCurrentPassword = true;
   bool _obscureNewPassword = true;
   bool _isUpdating = false;
+  late Future<Map<String, String>> _userInfoFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userInfoFuture = DatabaseHelper().getUserInfo(widget.username);
+  }
 
   @override
   void dispose() {
@@ -254,67 +261,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
+                  FutureBuilder<Map<String, String>>(
+                    future: _userInfoFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final userInfo = snapshot.data ?? {'name': 'User', 'nim': 'N/A'};
+                      final name = userInfo['name'] ?? 'User';
+                      final nim = userInfo['nim'] ?? 'N/A';
+
+                      return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade300,
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                            size: 32,
-                          ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade300,
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                color: Colors.grey,
+                                size: 32,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'NIM: [$nim]',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    'DEVELOPER APLIKASI',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF4ECCA7),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Dika Dwi Alamsyah',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'NIM: [2241720129]',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'DEVELOPER APLIKASI',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF4ECCA7),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 24),
                   // Logout Button
