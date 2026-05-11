@@ -90,6 +90,7 @@ class _AddRegularTaskScreenState extends State<AddRegularTaskScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF52B788),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Tambah Tugas Biasa',
           style: TextStyle(

@@ -89,6 +89,7 @@ class _AddImportantTaskScreenState extends State<AddImportantTaskScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFCC3333),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Tambah Tugas Penting',
           style: TextStyle(
